@@ -7,9 +7,10 @@
 #include <QStringList>
 
 Dialog::Dialog(QWidget *parent) : QDialog(parent),
-                                  ui(new Ui::Dialog)
+                                  ui(new Ui::Dialog), model(NULL)
 {
     ui->setupUi(this);
+
 
     file_path = "C:/Users/louis.wang/Desktop/log.txt";
     read_file(file_path);
@@ -44,7 +45,9 @@ void Dialog::read_file(QString file_path)
         col = l2.length()/row;
         file.close();
 
-        QStandardItemModel *model = new QStandardItemModel;
+        if (model == NULL)
+            model = new QStandardItemModel;
+
         int cnt = 0;
         for (int y = 0; y < row; y++)
         {
@@ -85,11 +88,11 @@ void Dialog::on_write_btn_clicked()
         QTextStream out(&file);
 
         int cnt = 1;
-        qDebug() << row << " " << col;
         for (int x = 0; x < row; x++)
             for (int y = 0; y < col; y++)
             {
-                QString str = ui->tableView->model()->data(ui->tableView->model()->index(x, y)).toString();
+//                qDebug()<<model->data(model->index(x, y));
+                QString str = model->data(model->index(x, y)).toString();
                 if (cnt++ % col != 0)
                     out << str + "/";
                 else
